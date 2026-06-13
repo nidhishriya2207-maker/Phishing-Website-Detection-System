@@ -1,0 +1,297 @@
+[
+  {
+    "timestamp": "2026-06-13T00:31:09.845921Z",
+    "dataset_id": "shashwat_phishing",
+    "dataset_version": "1",
+    "status": "rejected",
+    "reason": "F1 dropped significantly (New: 0.6461, Active: 0.8859).",
+    "previous_metrics": {
+      "accuracy": 0.9045680687471732,
+      "precision": 0.9171332586786114,
+      "recall": 0.856694560669456,
+      "f1_score": 0.8858842617631152,
+      "confusion_matrix": [
+        [
+          1181,
+          74
+        ],
+        [
+          137,
+          819
+        ]
+      ]
+    },
+    "new_metrics": {
+      "accuracy": 0.6219000000000001,
+      "precision": 0.6301118983813262,
+      "recall": 0.7542979654506025,
+      "f1_score": 0.6461075645790147,
+      "confusion_matrix": [
+        [
+          2474,
+          2526
+        ],
+        [
+          1255,
+          3745
+        ]
+      ],
+      "dataset_source": "shashwatwork/phishing-dataset-for-machine-learning",
+      "dataset_version": "1",
+      "training_date": "2026-06-13T00:31:09.553823Z",
+      "sample_count": 10000,
+      "feature_mapping_used": {
+        "is_length_suspicious": {
+          "type": "binary",
+          "column": "UrlLength",
+          "condition": ">= 75"
+        },
+        "has_ip_address": {
+          "type": "direct",
+          "column": "IpAddress"
+        },
+        "is_subdomain_depth_suspicious": {
+          "type": "binary",
+          "column": "SubdomainLevel",
+          "condition": "> 3"
+        },
+        "has_at_symbol": {
+          "type": "direct",
+          "column": "AtSymbol"
+        },
+        "hyphen_count_in_domain": {
+          "type": "binary",
+          "column": "NumDashInHostname",
+          "condition": ">= 1"
+        },
+        "ssl_valid": {
+          "type": "default",
+          "value": 1
+        },
+        "https_enabled": {
+          "type": "expression",
+          "expression": "1 - NoHttps"
+        },
+        "domain_age_days": {
+          "type": "default",
+          "value": 365
+        },
+        "dns_has_a_records": {
+          "type": "default",
+          "value": 1
+        },
+        "suspicious_keywords_count": {
+          "type": "binary",
+          "column": "NumSensitiveWords",
+          "condition": ">= 1"
+        }
+      }
+    }
+  },
+  {
+    "timestamp": "2026-06-13T00:50:46.921444Z",
+    "dataset_id": "shashwat_phishing",
+    "dataset_version": "1",
+    "status": "rejected",
+    "reason": "F1 dropped significantly (New: 0.6461, Active: 0.8859).",
+    "previous_metrics": {
+      "accuracy": 0.9045680687471732,
+      "precision": 0.9171332586786114,
+      "recall": 0.856694560669456,
+      "f1_score": 0.8858842617631152,
+      "confusion_matrix": [
+        [
+          1181,
+          74
+        ],
+        [
+          137,
+          819
+        ]
+      ]
+    },
+    "new_metrics": {
+      "accuracy": 0.6219000000000001,
+      "precision": 0.6301118983813262,
+      "recall": 0.7542979654506025,
+      "f1_score": 0.6461075645790147,
+      "confusion_matrix": [
+        [
+          2474,
+          2526
+        ],
+        [
+          1255,
+          3745
+        ]
+      ],
+      "dataset_source": "shashwatwork/phishing-dataset-for-machine-learning",
+      "dataset_version": "1",
+      "training_date": "2026-06-13T00:50:46.737331Z",
+      "sample_count": 10000,
+      "feature_mapping_used": {
+        "is_length_suspicious": {
+          "type": "binary",
+          "column": "UrlLength",
+          "condition": ">= 75"
+        },
+        "has_ip_address": {
+          "type": "direct",
+          "column": "IpAddress"
+        },
+        "is_subdomain_depth_suspicious": {
+          "type": "binary",
+          "column": "SubdomainLevel",
+          "condition": "> 3"
+        },
+        "has_at_symbol": {
+          "type": "direct",
+          "column": "AtSymbol"
+        },
+        "hyphen_count_in_domain": {
+          "type": "binary",
+          "column": "NumDashInHostname",
+          "condition": ">= 1"
+        },
+        "ssl_valid": {
+          "type": "default",
+          "value": 1
+        },
+        "https_enabled": {
+          "type": "expression",
+          "expression": "1 - NoHttps"
+        },
+        "domain_age_days": {
+          "type": "default",
+          "value": 365
+        },
+        "dns_has_a_records": {
+          "type": "default",
+          "value": 1
+        },
+        "suspicious_keywords_count": {
+          "type": "binary",
+          "column": "NumSensitiveWords",
+          "condition": ">= 1"
+        }
+      }
+    }
+  },
+  {
+    "version": "1.0.0",
+    "training_date": "2026-06-13",
+    "model_type": "RandomForest",
+    "n_estimators": 200,
+    "max_depth": 15,
+    "features": 10,
+    "feature_names": [
+      "is_length_suspicious",
+      "has_ip_address",
+      "is_subdomain_depth",
+      "has_at_symbol",
+      "hyphen_count_in_domain",
+      "ssl_valid",
+      "https_enabled",
+      "domain_age_days",
+      "dns_has_a_records",
+      "suspicious_keywords_count"
+    ],
+    "dataset_info": {
+      "total_samples": 50000,
+      "phishing_samples": 25000,
+      "legitimate_samples": 25000
+    },
+    "training_results": {
+      "train_accuracy": 1.0,
+      "test_accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0
+    },
+    "cross_validation": {
+      "cv_folds": 5,
+      "mean_accuracy": 1.0,
+      "std_accuracy": 0.0
+    },
+    "status": "success"
+  },
+  {
+    "version": "1.0.0",
+    "training_date": "2026-06-13",
+    "model_type": "RandomForest",
+    "n_estimators": 200,
+    "max_depth": 15,
+    "features": 10,
+    "feature_names": [
+      "is_length_suspicious",
+      "has_ip_address",
+      "is_subdomain_depth",
+      "has_at_symbol",
+      "hyphen_count_in_domain",
+      "ssl_valid",
+      "https_enabled",
+      "domain_age_days",
+      "dns_has_a_records",
+      "suspicious_keywords_count"
+    ],
+    "dataset_info": {
+      "total_samples": 50000,
+      "phishing_samples": 25000,
+      "legitimate_samples": 25000
+    },
+    "training_results": {
+      "train_accuracy": 1.0,
+      "test_accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0
+    },
+    "cross_validation": {
+      "cv_folds": 5,
+      "mean_accuracy": 1.0,
+      "std_accuracy": 0.0
+    },
+    "status": "success"
+  },
+  {
+    "version": "1.0.0",
+    "training_date": "2026-06-13",
+    "model_type": "RandomForest",
+    "n_estimators": 200,
+    "max_depth": 15,
+    "features": 10,
+    "feature_names": [
+      "is_length_suspicious",
+      "has_ip_address",
+      "is_subdomain_depth",
+      "has_at_symbol",
+      "hyphen_count_in_domain",
+      "ssl_valid",
+      "https_enabled",
+      "domain_age_days",
+      "dns_has_a_records",
+      "suspicious_keywords_count"
+    ],
+    "dataset_info": {
+      "total_samples": 50000,
+      "phishing_samples": 25000,
+      "legitimate_samples": 25000
+    },
+    "training_results": {
+      "train_accuracy": 0.96955,
+      "test_accuracy": 0.9642,
+      "precision": 0.9568897637795276,
+      "recall": 0.9722,
+      "f1_score": 0.964484126984127,
+      "roc_auc": 0.99491084
+    },
+    "cross_validation": {
+      "cv_folds": 5,
+      "mean_accuracy": 0.9661,
+      "std_accuracy": 0.0010862780491200142
+    },
+    "status": "success"
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "accuracy": 0.9642,
+  "precision": 0.9568897637795276,
+  "recall": 0.9722,
+  "f1_score": 0.964484126984127,
+  "confusion_matrix": [
+    [
+      4781,
+      219
+    ],
+    [
+      139,
+      4861
+    ]
+  ],
+  "roc_auc": 0.99491084,
+  "dataset_source": "taruntiwarihp/phishing-site-urls",
+  "dataset_version": "1",
+  "training_date": "2026-06-13",
+  "sample_count": 50000,
+  "feature_mapping_used": {
+    "is_length_suspicious": "len(url) > 75",
+    "has_ip_address": "IPv4/IPv6 pattern matches hostname",
+    "is_subdomain_depth": "len(hostname.split('.')) > 4",
+    "has_at_symbol": "'@' in url",
+    "hyphen_count_in_domain": "count('-') in hostname",
+    "ssl_valid": "simulated 0.92 / 0.15",
+    "https_enabled": "starts with https:// or simulated",
+    "domain_age_days": "simulated with 15%/40% 180-day default overlay",
+    "dns_has_a_records": "simulated 0.95 / 0.80",
+    "suspicious_keywords_count": "count in KEYWORDS dict"
+  }
+}

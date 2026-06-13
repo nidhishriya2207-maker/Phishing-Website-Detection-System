@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TechFlora Phishing Protection</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      width: 350px;
+      background-color: #ffffff;
+      color: #333333;
+      overflow-x: hidden;
+    }
+    /* Header styling */
+    .header {
+      background: linear-gradient(135deg, #2563eb, #60a5fa);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #ffffff;
+    }
+    .logo-container {
+      width: 40px;
+      height: 40px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .logo-container svg {
+      width: 100%;
+      height: 100%;
+    }
+    .header-text h1 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .header-text p {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* Content Area */
+    .content {
+      padding: 20px;
+    }
+
+    /* Status Card */
+    .status-card {
+      border-radius: 12px;
+      border: 2px solid #3be88c;
+      padding: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    .status-card.safe {
+      background-color: #f0fdf4;
+      border-color: #bbf7d0;
+      color: #166534;
+    }
+    .status-card.suspicious {
+      background-color: #fffbeb;
+      border-color: #fde68a;
+      color: #92400e;
+    }
+    .status-card.phishing {
+      background-color: #fef2f2;
+      border-color: #fecaca;
+      color: #991b1b;
+    }
+    .status-card.scanning {
+      background-color: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1e40af;
+    }
+    
+    .status-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .status-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .status-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .status-desc {
+      font-size: 13px;
+      color: #555555;
+    }
+
+    /* Risk Score Bar */
+    .risk-container {
+      margin-top: 10px;
+    }
+    .risk-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #555555;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .risk-bar-bg {
+      background-color: #e5e7eb;
+      height: 8px;
+      border-radius: 999px;
+      width: 100%;
+      overflow: hidden;
+    }
+    .risk-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.5s ease-in-out;
+    }
+    .safe .risk-bar-fill { background-color: #22c55e; }
+    .suspicious .risk-bar-fill { background-color: #f59e0b; }
+    .phishing .risk-bar-fill { background-color: #ef4444; }
+    .scanning .risk-bar-fill { 
+      background-color: #3b82f6; 
+      animation: pulse 1.5s infinite;
+    }
+
+    /* URL Box */
+    .url-section {
+      margin-bottom: 20px;
+    }
+    .url-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #888888;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .url-box {
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #4b5563;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Detailed Metrics Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .stat-card {
+      background: linear-gradient(to bottom right, #f8fafc, #ffffff);
+      border: 1px solid #eff6ff;
+      border-radius: 8px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #888888;
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .stat-value.green { color: #166534; }
+    .stat-value.red { color: #991b1b; }
+    .stat-value.yellow { color: #92400e; }
+
+    .full-width-stat {
+      grid-column: span 2;
+    }
+
+    /* Action Button */
+    .action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: linear-gradient(135deg, #2563eb, #60a5fa);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+      transition: all 0.2s ease;
+      text-decoration: none;
+      margin-top: 15px;
+    }
+    .action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
+    }
+    .action-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Warning Overlay Box (Only shown when risk > 80) */
+    .warning-overlay-box {
+      display: none;
+      background-color: #fef2f2;
+      border: 2px solid #ef4444;
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 15px;
+      color: #991b1b;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .warning-overlay-box.show {
+      display: block;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      padding: 10px;
+      text-align: center;
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-container">
+      <!-- Embedded TechFlora Logo (matching website TechFloraLogo.tsx SVG) -->
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 2C10.0589 2 2 10.0589 2 20C2 29.9411 10.0589 38 20 38C29.9411 38 38 29.9411 38 20C38 10.0589 29.9411 2 20 2Z" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5"/>
+        <path d="M20 10C14.4772 10 10 14.4772 10 20C10 25.5228 14.4772 30 20 30C25.5228 30 30 25.5228 30 20C30 14.4772 25.5228 10 20 10Z" fill="#93C5FD"/>
+        <path d="M20 14C16.6863 14 14 16.6863 14 20C14 23.3137 16.6863 26 20 26C23.3137 26 26 23.3137 26 20C26 16.6863 23.3137 14 20 14Z" fill="#2563EB"/>
+        <circle cx="20" cy="20" r="3" fill="#FFFFFF"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <h1>TechFlora</h1>
+      <p id="protection-status">Protection Active</p>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <!-- Status Card (changes class: safe, suspicious, phishing, scanning) -->
+    <div id="status-card" class="status-card scanning">
+      <div class="status-header">
+        <!-- Status Icon SVG -->
+        <svg id="status-icon" class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Default scanning icon (circle) -->
+          <circle cx="12" cy="12" r="10"></circle>
+        </svg>
+        <div>
+          <div id="status-title" class="status-title">Analyzing Site...</div>
+          <div id="status-desc" class="status-desc">Scanning website security indicators</div>
+        </div>
+      </div>
+
+      <!-- Risk Score Bar -->
+      <div class="risk-container">
+        <div class="risk-header">
+          <span>Risk Level</span>
+          <span id="risk-percentage">0%</span>
+        </div>
+        <div class="risk-bar-bg">
+          <div id="risk-bar-fill" class="risk-bar-fill" style="width: 5%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active URL -->
+    <div class="url-section">
+      <div class="url-title">Current Website</div>
+      <div id="current-url" class="url-box">Loading URL...</div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">SSL Certificate</div>
+        <div id="ssl-status" class="stat-value">Checking...</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">HTTPS Protocol</div>
+        <div id="https-status" class="stat-value">Checking...</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Domain Age</div>
+        <div id="domain-age" class="stat-value">Checking...</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Risk Rating</div>
+        <div id="risk-rating" class="stat-value">Checking...</div>
+      </div>
+    </div>
+
+    <!-- Red Warning System (Only shown if risk > 80) -->
+    <div id="warning-box" class="warning-overlay-box">
+      <strong>Warning:</strong> This website appears to be a phishing or malicious website. Proceed with caution.
+    </div>
+
+    <!-- View Full Report Button -->
+    <button id="report-btn" class="action-btn">
+      <span>View Full Report</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        <polyline points="15 3 21 3 21 9"></polyline>
+        <line x1="10" y1="14" x2="21" y2="3"></line>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    AI-Powered Real-Time Protection
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

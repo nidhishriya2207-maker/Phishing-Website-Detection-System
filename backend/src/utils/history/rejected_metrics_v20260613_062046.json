@@ -1,0 +1,66 @@
+{
+  "accuracy": 0.6219000000000001,
+  "precision": 0.6301118983813262,
+  "recall": 0.7542979654506025,
+  "f1_score": 0.6461075645790147,
+  "confusion_matrix": [
+    [
+      2474,
+      2526
+    ],
+    [
+      1255,
+      3745
+    ]
+  ],
+  "dataset_source": "shashwatwork/phishing-dataset-for-machine-learning",
+  "dataset_version": "1",
+  "training_date": "2026-06-13T00:50:46.737331Z",
+  "sample_count": 10000,
+  "feature_mapping_used": {
+    "is_length_suspicious": {
+      "type": "binary",
+      "column": "UrlLength",
+      "condition": ">= 75"
+    },
+    "has_ip_address": {
+      "type": "direct",
+      "column": "IpAddress"
+    },
+    "is_subdomain_depth_suspicious": {
+      "type": "binary",
+      "column": "SubdomainLevel",
+      "condition": "> 3"
+    },
+    "has_at_symbol": {
+      "type": "direct",
+      "column": "AtSymbol"
+    },
+    "hyphen_count_in_domain": {
+      "type": "binary",
+      "column": "NumDashInHostname",
+      "condition": ">= 1"
+    },
+    "ssl_valid": {
+      "type": "default",
+      "value": 1
+    },
+    "https_enabled": {
+      "type": "expression",
+      "expression": "1 - NoHttps"
+    },
+    "domain_age_days": {
+      "type": "default",
+      "value": 365
+    },
+    "dns_has_a_records": {
+      "type": "default",
+      "value": 1
+    },
+    "suspicious_keywords_count": {
+      "type": "binary",
+      "column": "NumSensitiveWords",
+      "condition": ">= 1"
+    }
+  }
+}

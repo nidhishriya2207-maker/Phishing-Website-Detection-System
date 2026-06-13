@@ -1,0 +1,107 @@
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import path from 'path';
+import fs from 'fs';
+import { exec } from 'child_process';
+import util from 'util';
+import * as archiverModule from 'archiver';
+const archiver = ((archiverModule as any).default || archiverModule) as any;
+import { connectDB } from './config/db.js';
+import scanRouter from './routes/scanRoutes.js';
+import blacklistRouter from './routes/blacklistRoutes.js';
+
+const execPromise = util.promisify(exec);
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Enable CORS for frontend requests (React app & Chrome Extension)
+app.use(cors({
+  origin: '*', // Allow all origins for extension and local development
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Connect to MongoDB Database
+connectDB();
+
+// API Endpoints
+app.use('/api', scanRouter);
+app.use('/api/blacklist', blacklistRouter);
+
+// Endpoint to download the Chrome extension as a ZIP archive
+app.get('/api/extension/download', (req, res) => {
+  const extensionPath = path.join(process.cwd(), '..', 'extension');
+  
+  if (!fs.existsSync(extensionPath)) {
+    return res.status(404).json({ error: 'Extension directory not found' });
+  }
+
+  res.setHeader('Content-Type', 'application/zip');
+  res.setHeader('Content-Disposition', 'attachment; filename=phishing-detection-extension.zip');
+
+  const archive = archiver('zip', { zlib: { level: 9 } });
+
+  archive.on('error', (err: any) => {
+    console.error('Archiving error:', err);
+    res.status(500).send({ error: err.message });
+  });
+
+  archive.pipe(res);
+  archive.directory(extensionPath, false); // false means do not wrap inside a folder inside the zip
+  archive.finalize();
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', timestamp: new Date() });
+});
+
+// Global error handler
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('Unhandled application error:', err);
+  res.status(500).json({ error: 'Internal server error occurred', details: err.message });
+});
+
+async function checkAndRetrainModel() {
+  console.log('[ML Pipeline] Checking for phishing dataset updates on startup...');
+  try {
+    const pythonCmd = process.platform === 'win32' ? 'py' : 'python3';
+    const scriptPath = path.join(process.cwd(), 'scripts', 'train.py');
+    const { stdout } = await execPromise(`${pythonCmd} "${scriptPath}" --check-only`);
+    
+    const result = JSON.parse(stdout.trim());
+    if (result.update_available) {
+      console.log(`[ML Pipeline] New dataset version detected (${result.new_version}). Starting background retraining...`);
+      const trainProcess = exec(`${pythonCmd} "${scriptPath}"`);
+      trainProcess.stdout?.on('data', (data) => {
+        console.log(`[ML Pipeline Trainer]: ${data.trim()}`);
+      });
+      trainProcess.stderr?.on('data', (data) => {
+        console.error(`[ML Pipeline Trainer Error]: ${data.trim()}`);
+      });
+      trainProcess.on('close', (code) => {
+        console.log(`[ML Pipeline] Background training completed with exit code ${code}`);
+      });
+    } else {
+      console.log(`[ML Pipeline] Model is already up to date (version: ${result.current_version}). No retraining required.`);
+    }
+  } catch (err) {
+    console.error('[ML Pipeline] Failed to check for dataset updates on startup:', err);
+  }
+}
+
+// Start listening
+app.listen(PORT, async () => {
+  console.log(`Server running on port ${PORT}`);
+  // Asynchronously trigger check and retraining if update is found
+  await checkAndRetrainModel();
+});
+
+export default app;

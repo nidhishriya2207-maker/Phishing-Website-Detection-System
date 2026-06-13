@@ -1,0 +1,51 @@
+{
+  "active_dataset_id": "auto",
+  "datasets": [
+    {
+      "id": "phiusiil_phishing",
+      "kaggle_handle": "waelalhasan/phiusiil-phishing-url-dataset",
+      "csv_filename": "PhiUSIIL_Phishing_URL_Dataset.csv",
+      "priority": 100,
+      "label_column": "Label",
+      "label_mapping": {
+        "phishing_value": 0,
+        "safe_value": 1
+      },
+      "feature_mappings": {
+        "is_length_suspicious": { "type": "binary", "column": "URLLength", "condition": ">= 75" },
+        "has_ip_address": { "type": "direct", "column": "HasIP" },
+        "is_subdomain_depth_suspicious": { "type": "binary", "column": "NoOfSubDomain", "condition": "> 3" },
+        "has_at_symbol": { "type": "direct", "column": "HasAtSymbol" },
+        "hyphen_count_in_domain": { "type": "binary", "column": "NoOfObfuscatedChar", "condition": ">= 1" },
+        "ssl_valid": { "type": "default", "value": 1 },
+        "https_enabled": { "type": "default", "value": 1 },
+        "domain_age_days": { "type": "default", "value": 365 },
+        "dns_has_a_records": { "type": "default", "value": 1 },
+        "suspicious_keywords_count": { "type": "default", "value": 0 }
+      }
+    },
+    {
+      "id": "shashwat_phishing",
+      "kaggle_handle": "shashwatwork/phishing-dataset-for-machine-learning",
+      "csv_filename": "Phishing_Legitimate_full.csv",
+      "priority": 90,
+      "label_column": "CLASS_LABEL",
+      "label_mapping": {
+        "phishing_value": 1,
+        "safe_value": 0
+      },
+      "feature_mappings": {
+        "is_length_suspicious": { "type": "binary", "column": "UrlLength", "condition": ">= 75" },
+        "has_ip_address": { "type": "direct", "column": "IpAddress" },
+        "is_subdomain_depth_suspicious": { "type": "binary", "column": "SubdomainLevel", "condition": "> 3" },
+        "has_at_symbol": { "type": "direct", "column": "AtSymbol" },
+        "hyphen_count_in_domain": { "type": "binary", "column": "NumDashInHostname", "condition": ">= 1" },
+        "ssl_valid": { "type": "default", "value": 1 },
+        "https_enabled": { "type": "expression", "expression": "1 - NoHttps" },
+        "domain_age_days": { "type": "default", "value": 365 },
+        "dns_has_a_records": { "type": "default", "value": 1 },
+        "suspicious_keywords_count": { "type": "binary", "column": "NumSensitiveWords", "condition": ">= 1" }
+      }
+    }
+  ]
+}
